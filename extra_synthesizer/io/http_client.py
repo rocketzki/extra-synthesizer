@@ -1,7 +1,7 @@
 import requests
 import base64 as b
 
-key = "AIzaSyALUs0uQXjd89m5nTMruw7vahusajfEAN8"
+key = ""
 address = "https://texttospeech.googleapis.com/v1/text:synthesize"
 
 
