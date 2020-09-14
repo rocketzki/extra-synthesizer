@@ -5,4 +5,4 @@ Analyzing, transforming human speech and interpreting user data input applicatio
 Python 3.7, django
 
 
-developed by Michał Markiete
+developed by Michał Markieta
