@@ -5,8 +5,8 @@ import os
 from defaults import ROOT_DIR
 from extra_synthesizer.audio.common import _get_bin_nr, sr, n_fft, hop_length
 
-__question_pattern = np.poly1d([24.95975232, -2.89615583, 0.23232714])
-__exclamation_pattern = np.poly1d([35.56182947, 2.58020149, -0.15004904])
+_question_pattern = np.poly1d([24.95975232, -2.89615583, 0.23232714])
+_exclamation_pattern = np.poly1d([35.56182947, 2.58020149, -0.15004904])
 
 
 def calculate_pattern_poly_coeff(file_name):
@@ -23,10 +23,3 @@ def calculate_pattern_poly_coeff(file_name):
 def calculate_pattern_poly_func(coefficients):
     return np.poly1d(coefficients)
 
-
-def question_pattern():
-    return __question_pattern
-
-
-def exclamation_pattern():
-    return __exclamation_pattern

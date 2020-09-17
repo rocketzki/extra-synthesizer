@@ -1,67 +1,53 @@
 import librosa.display
 import numpy as np
-import matplotlib.pyplot as plt
-import os
-import soundfile as sf
-from extra_synthesizer.audio.common import _get_bin_nr, sr, n_fft, hop_length
-
-PATH = "D:\\workspace\\code\\python\\audio-analysis\\src\\com\\rocketzki\\audioanalysis\\samples"
+from extra_synthesizer.audio.common import hop_length, n_fft, _show_spectrogram_with_f0_plot, sr
+from extra_synthesizer.audio.pattern import _question_pattern, _exclamation_pattern
 
 
-file_to_be_modified_name = "jak_sie_masz_n_nat"
-file_to_be_modified_path = os.path.join(PATH, file_to_be_modified_name + ".wav")
+def transform(sentence_audio_sample, mode=None, show_spectrograms=False, frames_from_end_to_transform=12):
+    # cutting out silence
+    y_trimmed, idx = librosa.effects.trim(sentence_audio_sample, top_db=60, frame_length=256, hop_length=64)
 
-file_target_path = os.path.join(PATH, file_to_be_modified_name + "_enhanced.wav")
+    stft_original = librosa.stft(y_trimmed, hop_length=hop_length, pad_mode='constant', center=True)
 
-y_target, sr_target = librosa.load(file_to_be_modified_path)
+    stft_original_roll = stft_original.copy()
+    rolled = stft_original_roll.copy()
+
+    source_frames_count = np.shape(stft_original_roll)[1]
+    sentence_ending_first_frame = source_frames_count - frames_from_end_to_transform
+    sentence_len = np.shape(stft_original_roll)[1]
+
+    for i in range(sentence_ending_first_frame + 1, sentence_len):
+        if mode == 'question':
+            by = int(_question_pattern(i) / 10)
+        elif mode == 'exclamation':
+            by = int(_exclamation_pattern(i) / 10)
+        else:
+            by = 0
+        rolled = _roll_column(rolled, i, by)
+
+    transformed_data = librosa.istft(rolled, hop_length=hop_length, center=True)
+
+    if show_spectrograms:
+        # spectrogram for original data
+        f0_original, voiced_flag_t, voiced_probs_t = librosa.pyin(y_trimmed, fmin=librosa.note_to_hz('C2'),
+                                                                  fmax=librosa.note_to_hz('C7'), sr=sr,
+                                                                  hop_length=hop_length, frame_length=n_fft,
+                                                                  pad_mode='constant', center=True)
+        times_original = librosa.times_like(f0_original)
+        _show_spectrogram_with_f0_plot(stft_original, times_original, f0_original)
+
+        # spectrogram for transformed data
+        f0_transformed, voiced_flag_tr, voiced_probs_tr = librosa.pyin(transformed_data, fmin=librosa.note_to_hz('C2'),
+                                                                       fmax=librosa.note_to_hz('C7'), sr=sr,
+                                                                       hop_length=hop_length, frame_length=n_fft,
+                                                                       pad_mode='constant', center=True)
+        times_transformed = librosa.times_like(f0_transformed)
+        _show_spectrogram_with_f0_plot(rolled, times_transformed, f0_transformed)
+
+    return transformed_data
 
 
-# target
-stft_target = librosa.stft(y_target, hop_length=512, pad_mode='constant', center=True, n_fft=4096)
-stft_target_abs = np.abs(stft_target)
-
-bin_size_hz_target = float(sr_target / np.shape(stft_target)[0])
-bins_target = np.arange(0, np.shape(stft_target)[0], bin_size_hz_target)
-
-f0_target, voiced_flag_t, voiced_probs_t = librosa.pyin(y_target, fmin=librosa.note_to_hz('C2'),
-                                                        fmax=librosa.note_to_hz('C7'), sr=sr_target,
-                                                        hop_length=512, frame_length=4096,
-                                                        pad_mode='constant', center=True)
-times_target = librosa.times_like(f0_target)
-
-
-def roll_column(two_d_array, column, shift):
+def _roll_column(two_d_array, column, shift):
     two_d_array[:, column] = np.roll(two_d_array[:, column], shift)
     return two_d_array
-
-
-
-stft_target_roll = stft_target.copy()
-
-
-# stft_source_roll = stft_source.copy()
-rolled = []
-for i in range(0, np.shape(stft_target_roll)[1]):
-    if i >= len(stft_target_roll):
-        by = int(pattern_src_poly(i)/10000)
-        print("rolling by: " + str(by))
-        rolled = roll_column(rolled, i, by)
-
-
-fig, ax = plt.subplots()
-
-img = librosa.display.specshow(librosa.amplitude_to_db(rolled, ref=np.max), x_axis='time', y_axis='log',
-                               ax=ax)
-fig.colorbar(img, ax=ax, format="%+2.f dB")
-
-ax.set(title='pYIN fundamental frequency estimation')
-
-ax.plot(times_target, f0_target, label='f0', color='cyan', linewidth=2)
-
-ax.legend(loc='upper right')
-plt.show()
-
-transformed_data = librosa.istft(rolled, hop_length=512, center=True)
-
-def transform(sentence_audio_sample, mode=''):
-    return sentence_audio_sample
