@@ -1,4 +1,4 @@
-## Syntezator mowy (extra-synthesizer v0.0.1)
+## Ulepszony Syntezator Mowy (extra-synthesizer v0.0.1)
 
 Analyzing, transforming human speech and interpreting user data input application.
 
