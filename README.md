@@ -29,7 +29,7 @@ Wystarczy przekopiować zawartość podarchum PL_pl.zip do katalogu: `%PYTHONPAT
     Następnie tworzymy klucz API. Instrukcja utworzenia klucza dla darmowej wersji próbnej usługi Google Text-To-Speech API znajduje się na stronie: https://developers.google.com/maps/documentation/javascript/get-api-key
 
 
-Aplikację uruchamiamy komendą: `python manage.py runserver` i wchodzimy w przeglądarce na adres: http://127.0.0.1:8000/
+Aplikację uruchamiamy komendą: `python manage.py runserver` i wchodzimy w przeglądarce na adres: http://127.0.0.1:8000/synthesizer/
 
 Jeśli otwieramy projekt w programie PyCharm, wystarczy załadować konfigurację z pliku `.run\extra_talker.run.xml` i uruchomić konfigurację `extra_talker`
 
