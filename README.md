@@ -30,6 +30,7 @@ Wystarczy przekopiować zawartość podarchum PL_pl.zip do katalogu: `%PYTHONPAT
 
 
 Aplikację uruchamiamy komendą: `python manage.py runserver` i wchodzimy w przeglądarce na adres: http://127.0.0.1:8000/synthesizer/
+Aby zsyntetyzowany plik został zapisany (domyślnie w folderze `resources\target`), należy zmienić flagę SHOULD_SAVE_LOCALLY z pliku `app\view.py` na `True`.
 
 Jeśli otwieramy projekt w programie PyCharm, wystarczy załadować konfigurację z pliku `.run\extra_talker.run.xml` i uruchomić konfigurację `extra_talker`
 

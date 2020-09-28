@@ -19,9 +19,9 @@ def transform(sentence_audio_sample, mode=None, show_spectrograms=False, frames_
 
     for i in range(sentence_ending_first_frame + 1, sentence_len):
         if mode == 'question':
-            by = int(_question_pattern(i) / 10)
+            by = int(_question_pattern(i) / 500)
         elif mode == 'exclamation':
-            by = int(_exclamation_pattern(i) / 10)
+            by = int(_exclamation_pattern(i) / 500)
         else:
             by = 0
         rolled = _roll_column(rolled, i, by)
